@@ -20,7 +20,7 @@ var App = (function() {
     var DEBUG = false;
     
     // 🔹 Regex compilado UNA VEZ (no en cada llamada)
-    var RX_FORMATOS = /\.m3u8|\.ts|\.mp4|\.mkv|\.avi|\.flv|application\/x-mpegurl/i;
+    var RX_FORMATOS = /\.m3u8|\.ts|\.mp4|\.mkv|\.avi|\.flv|application\/x-mpegurl|\?token=/i;
     
     // Variables privadas
     var videoEl = null;
