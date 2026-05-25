@@ -1,29 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>IPTV UltraLight</title>
+    <!-- Viewport nativo para TV Full HD: esencial incluso en app alojada -->
+    <meta name="viewport" content="width=1920, height=1080, user-scalable=no" />
+    <title>Mi Xuper TV</title>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
-    <!-- Capa 1: Reproductor de Video nativo (Cero consumo de CPU en JS) -->
-    <video id="tv-player" autoplay style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: #000;"></video>
+    <!-- Reproductor nativo: hardware-accelerated -->
+    <video id="tv-player" 
+           autoplay 
+           style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; background:#000;">
+    </video>
 
-    <!-- Capa 2: Interfaz de Usuario flotante (Z-Index Superior) -->
+    <!-- UI flotante -->
     <div id="ui-sidebar" class="sidebar">
-        <div class="sidebar-header">Canales (<span id="total-canales">0</span>)</div>
-        <!-- Contenedor Virtual: Siempre mide lo mismo visualmente -->
-        <div id="scroll-contenedor" class="scroll-box">
-            <ul id="dom-lista">
-                <!-- Se inyectan únicamente 10 elementos fijos mediante JS -->
-            </ul>
+        <div class="sidebar-header">
+            <span id="app-title">Mi Xuper TV</span>
+            <span id="total-canales" class="badge">0</span>
         </div>
+        
+        <!-- Scroll virtualizado -->
+        <div id="scroll-contenedor" class="scroll-box">
+            <ul id="dom-lista"></ul>
+        </div>
+        
+        <!-- Indicadores de estado: CRÍTICOS para app remota -->
+        <div id="loading-indicator" class="loading" style="display:none;">Actualizando...</div>
+        <div id="error-message" class="error" style="display:none;"></div>
     </div>
 
-    <!-- Librerías de plataforma de Samsung -->
+    <!-- API de Samsung (funciona igual en app local o alojada) -->
     <script type="text/javascript" src="$WEBAPIS/webapis/webapis.js"></script>
-    <!-- Scripts de la Aplicación -->
+    
+    <!-- Scripts de la aplicación -->
     <script src="js/remote.js"></script>
     <script src="js/parser.js"></script>
     <script src="js/virtualscroll.js"></script>
