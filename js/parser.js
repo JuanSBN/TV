@@ -114,44 +114,45 @@ var ParserM3U = (function() {
          * @param {function} onError - Callback(mensaje)
          */
         cargarDesdeURL: function(url, onCompleto, onError) {
-            canales = []; // Resetear estado previo
-            log('📥 Cargando: ' + url);
-            
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
-            xhr.timeout = 30000;
-            xhr.responseType = 'text'; // Explícito para compatibilidad
-            
-            xhr.onload = function() {
-                if (xhr.status !== 200) {
-                    if (typeof onError === 'function') onError('HTTP ' + xhr.status);
-                    return;
-                }
-                
-                var texto = xhr.responseText;
-                
-                // 🔹 Validación rápida de header M3U
-                if (texto.indexOf('#EXTM3U') === -1) {
-                    warn('⚠ Archivo sin header #EXTM3U, intentando procesar igual');
-                }
-                
-                // 🔹 Split optimizado: filtrar líneas vacías durante el proceso, no antes
-                var lineas = texto.split('\n');
-                log('📄 ' + lineas.length + ' líneas para procesar');
-                
-                procesarBloque(lineas, 0, onCompleto);
-            };
-            
-            xhr.onerror = function() {
-                if (typeof onError === 'function') onError('Error de red');
-            };
-            
-            xhr.ontimeout = function() {
-                if (typeof onError === 'function') onError('Timeout');
-            };
-            
-            xhr.send();
-        },
+    // 🔑 CRÍTICO: Limpiar array ANTES de cargar
+    canales = [];
+    
+    log('📥 Cargando: ' + url);
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.timeout = 30000;
+    xhr.responseType = 'text';
+    
+    xhr.onload = function() {
+        if (xhr.status !== 200) {
+            if (typeof onError === 'function') onError('HTTP ' + xhr.status);
+            return;
+        }
+        
+        var texto = xhr.responseText;
+        
+        // Validar header
+        if (texto.indexOf('#EXTM3U') === -1) {
+            warn('⚠ Sin header #EXTM3U');
+        }
+        
+        var lineas = texto.split('\n');
+        log('📄 ' + lineas.length + ' líneas');
+        
+        procesarBloque(lineas, 0, onCompleto);
+    };
+    
+    xhr.onerror = function() {
+        if (typeof onError === 'function') onError('Error de red');
+    };
+    
+    xhr.ontimeout = function() {
+        if (typeof onError === 'function') onError('Timeout');
+    };
+    
+    xhr.send();
+},
         
         /**
          * Limpia memoria de canales procesados
