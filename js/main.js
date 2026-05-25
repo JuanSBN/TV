@@ -168,6 +168,14 @@ var App = (function() {
     };
 })();
 
+// Forzar foco inmediato al cargar (crítico para navegadores TV)
+window.onload = function() {
+    setTimeout(function() {
+        document.body.focus();
+        App.inicializar();
+    }, 200);
+};
+
 // ===== PUNTO DE ENTRADA =====
 (function() {
     'use strict';
