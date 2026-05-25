@@ -95,22 +95,28 @@ var VirtualScroll = (function() {
          * @param {Array} listaCanales - Array de objetos {n: nombre, u: url}
          */
         inicializar: function(listaCanales) {
-            log('🔄 Inicializando con ' + (listaCanales ? listaCanales.length : 0) + ' canales');
-            
-            datos = listaCanales || [];
-            indexSeleccionado = 0;
-            listaDOM = document.getElementById('dom-lista');
-            contenedorDOM = document.getElementById('scroll-contenedor'); // 🔹 Cachear
-            
-            if (!listaDOM || !contenedorDOM) {
-                if (DEBUG) console.error('[Scroll] Elementos DOM no encontrados');
-                return;
-            }
-            
-            var cantidad = Math.min(MAX_VISIBLE, datos.length);
-            crearNodosFijos(cantidad);
-            actualizarVista();
-        },
+    log('🔄 Inicializando con ' + (listaCanales ? listaCanales.length : 0) + ' canales');
+    
+    // 🔑 Limpiar datos anteriores
+    datos = [];
+    indexSeleccionado = 0;
+    
+    // Pequeño delay para asegurar que el DOM está limpio
+    setTimeout(function() {
+        datos = listaCanales || [];
+        listaDOM = document.getElementById('dom-lista');
+        contenedorDOM = document.getElementById('scroll-contenedor');
+        
+        if (!listaDOM || !contenedorDOM) {
+            if (DEBUG) console.error('[Scroll] Elementos DOM no encontrados');
+            return;
+        }
+        
+        var cantidad = Math.min(MAX_VISIBLE, datos.length);
+        crearNodosFijos(cantidad);
+        actualizarVista();
+    }, 50);
+},
         
         /**
          * Mueve el foco arriba/abajo
