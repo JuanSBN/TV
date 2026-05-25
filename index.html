@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=1920, height=1080, user-scalable=no" />
     <title>Mi Xuper TV</title>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <!-- Evita que el navegador TV active modo mouse/puntero -->
+<meta name="viewport" content="width=1920, height=1080, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<style>
+    /* Ocultar cursor y evitar scroll accidental */
+    body, html { overflow: hidden; cursor: none; -webkit-user-select: none; }
+    *:focus { outline: none; }
+</style>
 </head>
 <body>
     <!-- Reproductor nativo: hardware-accelerated -->
