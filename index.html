@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>IPTV UltraLight</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+</head>
+<body>
+    <!-- Capa 1: Reproductor de Video nativo (Cero consumo de CPU en JS) -->
+    <video id="tv-player" autoplay style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: #000;"></video>
+
+    <!-- Capa 2: Interfaz de Usuario flotante (Z-Index Superior) -->
+    <div id="ui-sidebar" class="sidebar">
+        <div class="sidebar-header">Canales (<span id="total-canales">0</span>)</div>
+        <!-- Contenedor Virtual: Siempre mide lo mismo visualmente -->
+        <div id="scroll-contenedor" class="scroll-box">
+            <ul id="dom-lista">
+                <!-- Se inyectan únicamente 10 elementos fijos mediante JS -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Librerías de plataforma de Samsung -->
+    <script type="text/javascript" src="$WEBAPIS/webapis/webapis.js"></script>
+    <!-- Scripts de la Aplicación -->
+    <script src="js/remote.js"></script>
+    <script src="js/parser.js"></script>
+    <script src="js/virtualscroll.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
