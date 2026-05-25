@@ -104,39 +104,88 @@ var App = (function() {
         },
         
         reproducirUrl: function(url) {
-            if (!url || !videoEl) return;
-            if (!validarFormatoUrl(url)) {
-                warn('Formato no compatible: ' + url);
-                mostrarError('Formato no soportado');
-                return;
-            }
+    if (!url || !videoEl) return;
+    
+    // Validación básica
+    if (!validarFormatoUrl(url)) {
+        warn('Formato no compatible: ' + url);
+        mostrarError('Formato no soportado');
+        return;
+    }
+    
+    try {
+        mostrarCarga(true, 'Conectando...');
+        this.limpiarReproduccion();
+        
+        // 🔑 CRÍTICO para Samsung 2015:
+        // 1. Forzar carga directa sin prefetch
+        // 2. Agregar atributos específicos para Tizen
+        videoEl.setAttribute('preload', 'auto');
+        videoEl.setAttribute('autoplay', 'true');
+        videoEl.setAttribute('playsinline', 'true');
+        videoEl.setAttribute('webkit-playsinline', 'true');
+        
+        // 3. Limpiar fuentes anteriores
+        videoEl.src = '';
+        videoEl.load();
+        
+        // 4. Pequeño delay antes de cargar nueva URL (evita race conditions)
+        setTimeout(function() {
+            videoEl.src = url;
+            videoEl.load();
             
-            try {
-                mostrarCarga(true, 'Conectando...');
-                this.limpiarReproduccion();
-                
-                videoEl.src = url;
-                videoEl.load();
-                
-                var p = videoEl.play();
-                if (p && typeof p.then === 'function') {
-                    p.catch(function(e) {
+            // 5. Intentar play con manejo de errores específico Tizen
+            var playPromise = videoEl.play();
+            
+            if (playPromise && typeof playPromise.then === 'function') {
+                playPromise
+                    .then(function() {
+                        log('▶ Reproducción iniciada');
+                    })
+                    .catch(function(err) {
                         mostrarCarga(false);
-                        mostrarError(CONFIG.MSG_ERROR_STREAM);
-                        error('Play error: ' + e.message);
+                        error('Error play(): ' + err.message);
+                        mostrarError('Error al reproducir. Intenta otro canal.');
                     });
-                }
-                
-                // 🔹 Asignar referencias, no crear funciones nuevas
-                videoEl.onplaying = onVideoPlaying;
-                videoEl.onerror = onVideoError;
-                
-            } catch (e) {
-                mostrarCarga(false);
-                mostrarError('Error interno');
-                error('Excepción: ' + e.message);
             }
-        },
+        }, 100);
+        
+        // 6. Eventos específicos para debug
+        videoEl.onplaying = function() {
+            mostrarCarga(false);
+            log('▶ Reproduciendo: ' + url);
+        };
+        
+        videoEl.onerror = function() {
+            mostrarCarga(false);
+            var err = videoEl.error;
+            var msg = 'Error de video';
+            if (err) {
+                switch(err.code) {
+                    case 1: msg = 'Video abortado'; break;
+                    case 2: msg = 'Error de red'; break;
+                    case 3: msg = 'Video no soportado'; break;
+                    case 4: msg = 'Formato inválido'; break;
+                }
+            }
+            error('Video error: ' + msg);
+            mostrarError(msg);
+        };
+        
+        videoEl.onwaiting = function() {
+            log('⏳ Buffering...');
+        };
+        
+        videoEl.onstalled = function() {
+            warn('⚠ Stream stalled');
+        };
+        
+    } catch (e) {
+        mostrarCarga(false);
+        error('Excepción: ' + e.message);
+        mostrarError('Error interno');
+    }
+},
         
         limpiarReproduccion: function() {
             if (!videoEl) return;
