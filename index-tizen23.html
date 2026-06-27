@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=1920, height=1080, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Mi Xuper TV</title>
+    
+    <style type="text/css">
+        /* CSS compatible con WebKit 538.1 (Tizen 2.3) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 18px;
+            overflow: hidden;
+            width: 1920px;
+            height: 1080px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        
+        /* Contenedor del video */
+        #video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-color: #000000;
+        }
+        
+        #tv-player {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            display: block;
+        }
+        
+        /* Sidebar de canales */
+        #sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 10;
+            overflow-y: auto;
+            border-right: 2px solid #333333;
+        }
+        
+        #sidebar-header {
+            position: sticky;
+            top: 0;
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-bottom: 2px solid #ffcc00;
+            z-index: 5;
+        }
+        
+        #app-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00;
+            display: block;
+        }
+        
+        #total-canales {
+            font-size: 14px;
+            color: #999999;
+            margin-top: 5px;
+        }
+        
+        /* Lista de canales */
+        #lista-canales {
+            list-style-type: none;
+            padding: 10px;
+        }
+        
+        .canal-item {
+            padding: 15px 20px;
+            margin-bottom: 5px;
+            background-color: #2a2a2a;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            transition: none;
+        }
+        
+        .canal-item.active {
+            background-color: #ffcc00;
+            color: #000000;
+            border-left-color: #ffffff;
+        }
+        
+        .canal-item:hover {
+            background-color: #3a3a3a;
+        }
+        
+        .canal-item.active:hover {
+            background-color: #ffcc00;
+        }
+        
+        .canal-number {
+            display: inline-block;
+            width: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .canal-name {
+            display: inline-block;
+        }
+        
+        /* Indicadores */
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 30px 50px;
+            border-radius: 10px;
+            border: 2px solid #ffcc00;
+            z-index: 100;
+            text-align: center;
+            display: none;
+        }
+        
+        #loading.visible {
+            display: block;
+        }
+        
+        #error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(139, 0, 0, 0.95);
+            color: #ffffff;
+            padding: 30px 50px;
+            border-radius: 10px;
+            border: 2px solid #ff0000;
+            z-index: 100;
+            text-align: center;
+            display: none;
+            max-width: 600px;
+        }
+        
+        #error-message.visible {
+            display: block;
+        }
+        
+        /* Scrollbar simple */
+        #sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #sidebar::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        #sidebar::-webkit-scrollbar-thumb {
+            background: #444444;
+        }
+        
+        #sidebar::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor del video -->
+    <div id="video-container">
+        <video 
+            id="tv-player" 
+            autoplay="autoplay" 
+            preload="auto" 
+            webkit-playsinline="true" 
+            playsinline="true"
+            controls="false">
+        </video>
+    </div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div id="sidebar-header">
+            <span id="app-title">Mi Xuper TV</span>
+            <span id="total-canales">Cargando canales...</span>
+        </div>
+        <ul id="lista-canales">
+            <!-- Los canales se generan dinámicamente -->
+        </ul>
+    </div>
+    
+    <!-- Loading -->
+    <div id="loading">
+        <div style="font-size: 24px; margin-bottom: 10px;">⏳</div>
+        <div id="loading-text">Cargando...</div>
+    </div>
+    
+    <!-- Error -->
+    <div id="error-message">
+        <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
+        <div id="error-text">Error</div>
+    </div>
+    
+    <!-- Script optimizado para Tizen 2.3 -->
+    <script type="text/javascript" src="js/app-tizen23.js"></script>
+</body>
+</html>
